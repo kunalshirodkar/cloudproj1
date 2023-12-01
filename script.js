@@ -21,7 +21,7 @@ function sendDataToCosmosDB(formData) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      product: formData.get('productDropdown'),
+      products: formData.get('productDropdown'),
       name: formData.get('name'),
       email: formData.get('email'),
       feedback: formData.get('feedback')
