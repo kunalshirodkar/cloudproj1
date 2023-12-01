@@ -13,21 +13,44 @@ function populateDropdown() {
   });
 }
 
+// Function to send form data to backend/Cosmos DB
+function sendDataToCosmosDB(formData) {
+  fetch('/submit-feedback', { // Replace with your backend endpoint
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      product: formData.get('productDropdown'),
+      name: formData.get('name'),
+      email: formData.get('email'),
+      feedback: formData.get('feedback')
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Data sent:', data);
+    alert('Form submitted successfully!');
+  })
+  .catch(error => {
+    console.error('There was an error sending data:', error);
+    alert('Form submission failed. Please try again.');
+  });
+}
+
 // Event listener for form submission
 const feedbackForm = document.getElementById('feedbackForm');
 feedbackForm.addEventListener('submit', function(event) {
   event.preventDefault(); // Prevents default form submission for demonstration
 
-  // You can handle form submission here (e.g., send data to a server)
   const formData = new FormData(feedbackForm);
-  // Process formData as needed (e.g., send it to a backend using fetch)
-  console.log(formData);
-
-  // Show submission confirmation to the user
-  alert('Form submitted successfully!');
-  
-  // Reset form values after submission
-  feedbackForm.reset();
+  sendDataToCosmosDB(formData); // Send form data to Cosmos DB or backend
+  feedbackForm.reset(); // Reset form values after submission
 });
 
 // Call the function to populate the dropdown when the page loads
