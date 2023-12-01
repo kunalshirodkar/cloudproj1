@@ -1,10 +1,8 @@
-// JavaScript to populate the product dropdown
 const productDropdown = document.getElementById('productDropdown');
+const feedbackForm = document.getElementById('feedbackForm');
 
-// Assuming you have an array of products
 const products = ['Shoes', 'Jeans', 'Dress'];
 
-// Function to populate dropdown options
 function populateDropdown() {
   products.forEach(product => {
     const option = document.createElement('option');
@@ -13,7 +11,6 @@ function populateDropdown() {
   });
 }
 
-// Function to send form data to backend/Cosmos DB
 function sendDataToCosmosDB(formData) {
   fetch('/submit-feedback', { // Replace with your backend endpoint
     method: 'POST',
@@ -36,6 +33,7 @@ function sendDataToCosmosDB(formData) {
   .then(data => {
     console.log('Data sent:', data);
     alert('Form submitted successfully!');
+    feedbackForm.reset(); // Reset form values after successful submission
   })
   .catch(error => {
     console.error('There was an error sending data:', error);
@@ -43,15 +41,24 @@ function sendDataToCosmosDB(formData) {
   });
 }
 
-// Event listener for form submission
-const feedbackForm = document.getElementById('feedbackForm');
-feedbackForm.addEventListener('submit', function(event) {
-  event.preventDefault(); // Prevents default form submission for demonstration
+function validateForm() {
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
 
-  const formData = new FormData(feedbackForm);
-  sendDataToCosmosDB(formData); // Send form data to Cosmos DB or backend
-  feedbackForm.reset(); // Reset form values after submission
+  if (!name || !email || !feedbackForm.checkValidity()) {
+    alert('Please fill in all fields correctly before submitting.');
+    return false;
+  }
+  return true;
+}
+
+feedbackForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  if (validateForm()) {
+    const formData = new FormData(feedbackForm);
+    sendDataToCosmosDB(formData);
+  }
 });
 
-// Call the function to populate the dropdown when the page loads
 window.onload = populateDropdown;
